@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'calculate.dart';
-import 'package:calculator/components/textButton.dart';
+import 'package:calculator/components/text_button.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
@@ -21,7 +21,7 @@ class _CalcAppState extends State<CalcApp> {
       debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
-          backgroundColor: Color(0xFFEFF3EA),
+          backgroundColor: Color(0xFFFFFDF0),
           body: Calculator(),
         ),
       ),
@@ -41,62 +41,61 @@ class _CalculatorState extends State<Calculator> {
   String showResult = '';
   String history = '';
   bool isClicked = false;
-
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 150.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Expanded(
-            child: ListView(
-              reverse: true,
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    text,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Poppins',
-                    ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Expanded(
+          child: ListView(
+            reverse: true,
+            children: <Widget>[
+              ListTile(
+                title: Text(
+                  text,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Poppins',
                   ),
                 ),
-                ListTile(
-                  title: Text(
-                    showResult.isNotEmpty ? showResult : '',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Poppins',
-                    ),
+              ),
+              ListTile(
+                title: Text(
+                  showResult.isNotEmpty ? showResult : '',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 40.0,
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Poppins',
                   ),
                 ),
-                ListTile(
-                  title: Text(
-                    history,
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.grey,
-                      fontFamily: 'Poppins',
-                    ),
+              ),
+              ListTile(
+                title: Text(
+                  history,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.grey,
+                    fontFamily: 'Poppins',
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Divider(
-            color: Color(0xFFBCCCDC),
-            height: 10.0,
-            indent: 20.0,
-            endIndent: 20.0,
-          ),
-          Expanded(
+        ),
+        Divider(
+          color: Color(0xFFBCCCDC),
+          height: 10.0,
+          indent: 20.0,
+          endIndent: 20.0,
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
             child: Column(
               children: <Widget>[
                 Row(
@@ -106,9 +105,10 @@ class _CalculatorState extends State<Calculator> {
                       text: '/',
                       onPressed: () {
                         setState(() {
-                          text += '/';
                           if (text[0] == '/') {
                             text = '0/';
+                          } else if (!RegExp(r'[\+\-\*/]$').hasMatch(text)) {
+                            text += '/';
                           }
                         });
                       },
@@ -117,9 +117,10 @@ class _CalculatorState extends State<Calculator> {
                         text: '%',
                         onPressed: () {
                           setState(() {
-                            text += '%';
                             if (text[0] == '%') {
                               text = '0%';
+                            } else if (!RegExp(r'[\+\-\*/\%/]$').hasMatch(text)) {
+                              text += '%';
                             }
                           });
                         }),
@@ -140,11 +141,11 @@ class _CalculatorState extends State<Calculator> {
                         });
                       },
                       child: Icon(
-                        FontAwesomeIcons.arrowLeft,
+                        FontAwesomeIcons.deleteLeft,
                         size: 30.0,
                         color: Color(0xFFFB4141),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 Row(
@@ -155,9 +156,10 @@ class _CalculatorState extends State<Calculator> {
                       onPressed: () {
                         setState(
                           () {
-                            text += '+';
                             if (text[0] == '+') {
                               text = '0+';
+                            } else if (!RegExp(r'[\+\-\*/]$').hasMatch(text)) {
+                              text += '+';
                             }
                           },
                         );
@@ -201,9 +203,10 @@ class _CalculatorState extends State<Calculator> {
                       onPressed: () {
                         setState(
                           () {
-                            text += '-';
                             if (text[0] == '-') {
                               text = '0-';
+                            } else if (!RegExp(r'[\+\-\*/]$').hasMatch(text)) {
+                              text += '-';
                             }
                           },
                         );
@@ -249,9 +252,10 @@ class _CalculatorState extends State<Calculator> {
                       onPressed: () {
                         setState(
                           () {
-                            text += '*';
                             if (text[0] == '*') {
                               text = '0*';
+                            } else if (!RegExp(r'[\+\-\*/]$').hasMatch(text)) {
+                              text += '*';
                             }
                           },
                         );
@@ -297,9 +301,10 @@ class _CalculatorState extends State<Calculator> {
                       onPressed: () {
                         setState(
                           () {
-                            text += '^';
                             if (text[0] == '^') {
                               text = '0^';
+                            } else if (!RegExp(r'[\+\-\*/]$').hasMatch(text)) {
+                              text += '^';
                             }
                           },
                         );
@@ -345,8 +350,8 @@ class _CalculatorState extends State<Calculator> {
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
