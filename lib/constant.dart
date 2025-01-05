@@ -5,3 +5,4 @@ const kTextStyle = TextStyle(
   fontFamily: 'sans',
   color: Color(0xFFF26B0F)
 );
+const kFontfamily = 'Pacifico';
