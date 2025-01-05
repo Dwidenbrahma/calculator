@@ -17,18 +17,33 @@ class Calculate {
       ContextModel contextModel = ContextModel();
 
       // Evaluate the expression
-      dynamic evaluatedResult = exp.evaluate(EvaluationType.REAL, contextModel);
+      dynamic evaluatedResult;
 
-      if (evaluatedResult is double) {
-        if (evaluatedResult.isNaN) {
-          return 'NaN'; // Return 'NaN' if the result is NaN
-        } else if (evaluatedResult == evaluatedResult.toInt()) {
-          return evaluatedResult.toInt().toString(); // Return as integer if the result has no decimal part
+      try {
+        evaluatedResult = exp.evaluate(EvaluationType.REAL, contextModel);
+        if (evaluatedResult is double) {
+          if (evaluatedResult.isNaN) {
+            return 'NaN';
+          } else if (evaluatedResult == evaluatedResult.toInt()) {
+            return evaluatedResult
+                .toInt()
+                .toString(); // Return as integer if the result has no decimal part
+          } else if (evaluatedResult.isInfinite) {
+            return 'Infinity';
+          } else {
+            return evaluatedResult.toStringAsFixed(
+                2); // Return as a decimal with two decimal places
+          }
         } else {
-          return evaluatedResult.toStringAsFixed(2); // Return as a decimal with two decimal places
+          return evaluatedResult
+              .toString(); // Return the result as a string if it's not a double
         }
-      } else {
-        return evaluatedResult.toString(); // Return the result as a string if it's not a double
+      } catch (e) {
+        if (e is UnsupportedError) {
+          return 'Undefined';
+        } else {
+          return 'Unexpected Error';
+        }
       }
     } catch (e) {
       return "Error: ${e.toString()}"; // Handle parsing or evaluation errors
