@@ -17,6 +17,21 @@ class _CalculatorState extends State<Calculator> {
   String showResult = '';
   String history = '';
   bool isClicked = false;
+  List<ListTile> historyList = [];
+  bool _canAddDecimal(String currentText) {
+    if (currentText.isEmpty || RegExp(r'[+\-*/]\s*$').hasMatch(currentText)) {
+      return false;
+    }
+
+    final parts = currentText.split(RegExp(r'[+\-*/]'));
+
+    final lastPart = parts.last.trim();
+
+    if (lastPart.contains('.')) {
+      return false;
+    }
+    return true;
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -35,7 +50,11 @@ class _CalculatorState extends State<Calculator> {
               onPressed: () {
                 Navigator.pushNamed(context, ScientificScreen.id);
               },
-              icon: Icon(Icons.calculate, size: 30.0,color: Color(0xFFFB4141),),
+              icon: Icon(
+                Icons.calculate,
+                size: 30.0,
+                color: Color(0xFFFB4141),
+              ),
             )
           ],
         ),
@@ -69,18 +88,7 @@ class _CalculatorState extends State<Calculator> {
                       ),
                     ),
                   ),
-                  ListTile(
-                    title: Text(
-                      history,
-                      textAlign: TextAlign.right,
-                      style: TextStyle(
-                        fontSize: 30.0,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.grey,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ),
+                  ...historyList,
                 ],
               ),
             ),
@@ -102,7 +110,7 @@ class _CalculatorState extends State<Calculator> {
                           text: '/',
                           onPressed: () {
                             setState(() {
-                              if (text[0] == '/') {
+                              if ( text.isEmpty ||text[0] == '/') {
                                 text = '0/';
                               } else if (!RegExp(r'[\+\-\*/]$')
                                   .hasMatch(text)) {
@@ -115,7 +123,7 @@ class _CalculatorState extends State<Calculator> {
                             text: '%',
                             onPressed: () {
                               setState(() {
-                                if (text[0] == '%') {
+                                if ( text.isEmpty||text[0] == '%') {
                                   text = '0%';
                                 } else if (!RegExp(r'[\+\-\*/\%/]$')
                                     .hasMatch(text)) {
@@ -130,6 +138,7 @@ class _CalculatorState extends State<Calculator> {
                               history = '';
                               text = '';
                               showResult = '';
+                              historyList.clear();
                             });
                           },
                         ),
@@ -155,7 +164,7 @@ class _CalculatorState extends State<Calculator> {
                           onPressed: () {
                             setState(
                               () {
-                                if (text[0] == '+') {
+                                if (text.isEmpty||text[0] == '+') {
                                   text = '0+';
                                 } else if (!RegExp(r'[\+\-\*/]$')
                                     .hasMatch(text)) {
@@ -203,7 +212,7 @@ class _CalculatorState extends State<Calculator> {
                           onPressed: () {
                             setState(
                               () {
-                                if (text[0] == '-') {
+                                if (text.isEmpty||text[0] == '-') {
                                   text = '0-';
                                 } else if (!RegExp(r'[\+\-\*/]$')
                                     .hasMatch(text)) {
@@ -253,7 +262,7 @@ class _CalculatorState extends State<Calculator> {
                           onPressed: () {
                             setState(
                               () {
-                                if (text[0] == '*') {
+                                if (text.isEmpty||text[0] == '*') {
                                   text = '0*';
                                 } else if (!RegExp(r'[\+\-\*/]$')
                                     .hasMatch(text)) {
@@ -303,7 +312,7 @@ class _CalculatorState extends State<Calculator> {
                           onPressed: () {
                             setState(
                               () {
-                                if (text[0] == '^') {
+                                if (text.isEmpty||text[0] == '^') {
                                   text = '0^';
                                 } else if (!RegExp(r'[\+\-\*/]$')
                                     .hasMatch(text)) {
@@ -316,11 +325,12 @@ class _CalculatorState extends State<Calculator> {
                         ),
                         Textbutton(
                           onPressed: () {
-                            setState(
-                              () {
+                            setState(() {
+                              // Check if it's valid to add a '.'
+                              if (_canAddDecimal(text)) {
                                 text += '.';
-                              },
-                            );
+                              }
+                            });
                           },
                           text: '.',
                         ),
@@ -341,6 +351,23 @@ class _CalculatorState extends State<Calculator> {
                                 Calculate calculate = Calculate(result: text);
                                 if (text != '') {
                                   showResult = calculate.getResult();
+
+                                  history = "$text = $showResult";
+                                  historyList.add(
+                                    ListTile(
+                                      title: Text(
+                                        history,
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.grey,
+                                          fontFamily: 'Poppins',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                  text='';
                                 }
                               },
                             );
